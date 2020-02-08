@@ -18,8 +18,7 @@ app.post("/messages", (req, res) => {
     Object.values(req.body).every(val => val.length)
   ) {
     app.locals.count = app.locals.count + 1;
-    res.send(req.body);
-  } else {
-    res.status(400).end();
+    return res.send(req.body);
   }
+  return res.status(400).end();
 });
