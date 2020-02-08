@@ -3,20 +3,23 @@ const app = express();
 const port = 3000;
 const bodyParser = express.json();
 
-let reqCount = 0;
+app.locals.count = 0;
 
-reqCountMiddleware = (req, res, next) => {
-  reqCount++;
-  return reqCount < 6 ? next() : res.status(429).end();
-};
+reqCountMiddleware = (req, res, next) =>
+  app.locals.count < 5 ? next() : res.status(429).end();
 
 app.use(bodyParser);
 app.use(reqCountMiddleware);
 app.listen(port);
 
-app.post("/messages", (req, res) =>
-  Object.keys(req.body).length &&
-  Object.values(req.body).every(val => val.length)
-    ? res.send(req.body)
-    : res.status(400).end()
-);
+app.post("/messages", (req, res) => {
+  if (
+    Object.keys(req.body).length &&
+    Object.values(req.body).every(val => val.length)
+  ) {
+    app.locals.count = app.locals.count + 1;
+    res.send(req.body);
+  } else {
+    res.status(400).end();
+  }
+});
