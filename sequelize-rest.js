@@ -50,10 +50,13 @@ app.post("/movie", async (req, res, next) => {
 
 app.get("/movie", async (req, res, next) => {
   try {
-    const allMovies = await Movie.findAll();
-    allMovies.length
-      ? res.json(allMovies)
-      : res.status(404).send("No movies found");
+    const limit = req.query.limit || 10;
+    const offset = req.query.offset || 0;
+    const movies = await Movie.findAndCountAll({ limit, offset });
+
+    movies.rows.length
+      ? res.json({ movies: movies.rows, total: movies.count })
+      : res.status(404).send("No movies found for that query");
   } catch (err) {
     next(err);
   }
