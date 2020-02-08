@@ -17,6 +17,6 @@ app.listen(port);
 app.post("/messages", (req, res) =>
   Object.keys(req.body).length &&
   Object.values(req.body).every(val => val.length)
-    ? res.json(req.body)
+    ? res.send(req.body)
     : res.status(400).end()
 );
